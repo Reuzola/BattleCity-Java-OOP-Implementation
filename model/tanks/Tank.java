@@ -6,6 +6,7 @@ public abstract class Tank {
 
    public static final int BULLET_SPEED = 5;
    public static final int SIZE = 32;
+   
    protected int x;
    protected int y;
    protected int health;

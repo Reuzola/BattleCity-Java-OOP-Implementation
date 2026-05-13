@@ -6,6 +6,7 @@ import model.blocks.Block;
 import model.powerups.PowerUp;
 import model.tanks.EnemyTank;
 import model.tanks.PlayerTank;
+import ui.KeyHandler;
 
 public class Game {
 
@@ -26,7 +27,7 @@ public class Game {
    private int enemiesSpawned;
    private GameState state;
    
-   public Game(int difficulty){
+   public Game(int difficulty, KeyHandler keyHandler){
       enemyTanks = new ArrayList<>();
       bullets = new ArrayList<>();
       powerUps = new ArrayList<>();
@@ -37,7 +38,7 @@ public class Game {
 
       int px = Level.PLAYER_SPAWN_GRID_X * Block.SIZE;
       int py = Level.PLAYER_SPAWN_GRID_Y * Block.SIZE;
-      playerTank = new PlayerTank(px, py);
+      playerTank = new PlayerTank(px, py, keyHandler);
 
       score = 0;
       lives = 3;

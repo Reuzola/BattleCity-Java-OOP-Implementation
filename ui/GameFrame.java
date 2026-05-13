@@ -29,8 +29,9 @@ public class GameFrame extends JFrame {
 
       exitItem.addActionListener(e -> System.exit(0));
 
-      Game game = new Game(1);
-      GamePanel gamePanel = new GamePanel(game);
+      KeyHandler keyHandler = new KeyHandler();
+      Game game = new Game(1, keyHandler);
+      GamePanel gamePanel = new GamePanel(game, keyHandler);
       add(gamePanel);
       pack();
       setLocationRelativeTo(null);

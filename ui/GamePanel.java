@@ -5,24 +5,29 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import game.Game;
 import model.Bullet;
-import model.Direction;
 import model.blocks.*;
 import model.tanks.*;
 
 public class GamePanel extends JPanel {
 
    private final Game game;
+   private final KeyHandler keyHandler;
 
-   public GamePanel(Game game){
+   public GamePanel(Game game, KeyHandler keyHandler){
       this.game = game;
 
       setPreferredSize(new Dimension(536, 416));
       setBackground(Color.BLACK);
+
+      this.keyHandler = keyHandler; 
+      addKeyListener(keyHandler);
+      setFocusable(true);
+      requestFocusInWindow(); 
    }
 
    @Override
    protected void paintComponent(Graphics g){
-      super.paintComponent(g);
+      super.paintComponent(g);          
       
       for (Block block : game.getBlocks()) {
          if(block instanceof BrickBlock) g.setColor(Color.ORANGE);
@@ -53,7 +58,6 @@ public class GamePanel extends JPanel {
          g.setColor(Color.WHITE);
          g.fillRect(bullet.getX(), bullet.getY(), Bullet.SIZE, Bullet.SIZE);
       }
-
    }
    
 }
