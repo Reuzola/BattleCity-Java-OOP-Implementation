@@ -1,6 +1,7 @@
 package ui;
 import javax.swing.*;
 import game.Game;
+import game.GameLoop;
 
 public class GameFrame extends JFrame {
 
@@ -36,6 +37,8 @@ public class GameFrame extends JFrame {
       pack();
       setLocationRelativeTo(null);
       
+      GameLoop gameLoop = new GameLoop(game, gamePanel);
+      gameLoop.start();
 
       setVisible(true);
    }
