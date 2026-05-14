@@ -11,15 +11,13 @@ import model.tanks.*;
 public class GamePanel extends JPanel {
 
    private final Game game;
-   private final KeyHandler keyHandler;
 
    public GamePanel(Game game, KeyHandler keyHandler){
       this.game = game;
 
       setPreferredSize(new Dimension(536, 416));
       setBackground(Color.BLACK);
-
-      this.keyHandler = keyHandler; 
+ 
       addKeyListener(keyHandler);
       setFocusable(true);
       requestFocusInWindow(); 

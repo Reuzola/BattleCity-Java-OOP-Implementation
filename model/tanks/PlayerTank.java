@@ -7,7 +7,7 @@ public class PlayerTank extends Tank {
    private KeyHandler keyHandler;
 
    public PlayerTank(int x, int y, KeyHandler keyHandler) {
-      super(x, y, 1, 2, Direction.UP);
+      super(x, y, 1, 3, Direction.UP);
       this.keyHandler = keyHandler;
    }
 
