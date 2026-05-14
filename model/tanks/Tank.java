@@ -1,13 +1,15 @@
 package model.tanks;
 import model.Direction;
+import model.blocks.Block;
+import game.Level;
 import model.Bullet;
 
 public abstract class Tank {
 
    public static final int BULLET_SPEED = 5;
-   public static final int SIZE = 32;
+   public static final int SIZE = 32; // Size of tanks
    
-   protected int x;
+   protected int x; // Coordinates
    protected int y;
    protected int health;
    protected int speed;
@@ -21,7 +23,7 @@ public abstract class Tank {
       this.direction = direction;
    }
    
-   public int getX() {
+   public int getX() { // Getters
       return x;
    }
    public int getY() {
@@ -41,8 +43,12 @@ public abstract class Tank {
    }
 
    public void move() {
-      x += direction.getDx() * speed;
-      y += direction.getDy() * speed;
+      int newX = x + direction.getDx() * speed; // current + delta
+      int newY = y + direction.getDy() * speed;
+      if(newX >= 0 && newX <= Level.GRID_WIDTH * Block.SIZE - SIZE && newY >= 0 && newY <= Level.GRID_HEIGHT * Block.SIZE - SIZE) {
+         x = newX;
+         y = newY;
+      }
    }
 
    public void takeDamage(int damage){
@@ -53,7 +59,7 @@ public abstract class Tank {
       return health <= 0;
    }
 
-   public Bullet fire(){
+   public Bullet fire(){ // 
       int centerX = x + SIZE / 2 - Bullet.SIZE / 2;
       int centerY = y + SIZE / 2 - Bullet.SIZE / 2;
       int bulletX = centerX + direction.getDx() * (SIZE / 2);
