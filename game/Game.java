@@ -84,5 +84,7 @@ public class Game {
       return state;
    }
    
-
+   public void update() {
+      playerTank.act();
+   }
 }
