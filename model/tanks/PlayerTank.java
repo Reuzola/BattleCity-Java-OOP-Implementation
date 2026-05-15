@@ -1,5 +1,6 @@
 package model.tanks;
 import java.util.ArrayList;
+import model.Bullet;
 import model.Direction;
 import model.blocks.Block;
 import ui.KeyHandler;
@@ -9,12 +10,12 @@ public class PlayerTank extends Tank {
    private KeyHandler keyHandler;
 
    public PlayerTank(int x, int y, KeyHandler keyHandler) {
-      super(x, y, 1, 3, Direction.UP); // Initial state of player tank
+      super(x, y, 1, 2, Direction.UP); // Initial state of player tank
       this.keyHandler = keyHandler;
    }
 
    @Override // Move method for player tank which is controlled by keyboard with KeyHandler class
-   public void act(ArrayList<Block> blocks) {
+   public Bullet act(ArrayList<Block> blocks) {
       if(keyHandler.upPressed) {
          setDirection(Direction.UP);
          move(blocks);
@@ -28,5 +29,8 @@ public class PlayerTank extends Tank {
          setDirection(Direction.RIGHT);
          move(blocks);
       }
+      if(keyHandler.firePressed) {
+         return fire();
+      } else return null;
    }
 }

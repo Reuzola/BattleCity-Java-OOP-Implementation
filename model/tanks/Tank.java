@@ -79,5 +79,5 @@ public abstract class Tank {
       return new Bullet(bulletX, bulletY, BULLET_SPEED, direction, this);
    }
 
-   public abstract void act(ArrayList<Block> blocks);
+   public abstract Bullet act(ArrayList<Block> blocks);
 }
