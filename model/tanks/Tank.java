@@ -8,7 +8,7 @@ import model.Bullet;
 public abstract class Tank {
 
    public static final int BULLET_SPEED = 5;
-   public static final int SIZE = 32; // Size of tanks
+   public static final int SIZE = 24; // Size of tanks
    
    protected int x; // Coordinates
    protected int y;

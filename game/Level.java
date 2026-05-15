@@ -7,7 +7,7 @@ public class Level {
    public static final int GRID_WIDTH = 13; // Map size 13x13
    public static final int GRID_HEIGHT = 13;
 
-   public static final int PLAYER_SPAWN_GRID_X = 4; // Defoult spawn points for player
+   public static final int PLAYER_SPAWN_GRID_X = 2; // Defoult spawn points for player
    public static final int PLAYER_SPAWN_GRID_Y = 12;
    public static final int BASE_GRID_X = 6;
    public static final int BASE_GRID_Y = 12;
