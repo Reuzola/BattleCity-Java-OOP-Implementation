@@ -84,7 +84,9 @@ public class Game {
       return state;
    }
    
-   public void update() {
-      playerTank.act();
+   public void update() { // Added base block to allBlock list which needed in act method
+      ArrayList<Block> allBlocks = new ArrayList<>(blocks);
+      allBlocks.add(baseBlock);
+      playerTank.act(allBlocks);
    }
 }

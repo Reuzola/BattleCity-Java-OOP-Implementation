@@ -1,5 +1,7 @@
 package model.tanks;
+import java.util.ArrayList;
 import model.Direction;
+import model.blocks.Block;
 
 public abstract class EnemyTank extends Tank {
 
@@ -8,7 +10,7 @@ public abstract class EnemyTank extends Tank {
    }
 
    @Override
-   public void act(){
+   public void act(ArrayList<Block> blocks){
       
    }
 }
