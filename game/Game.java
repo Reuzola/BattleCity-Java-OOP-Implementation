@@ -87,6 +87,41 @@ public class Game {
    public void update() { // Added base block to allBlock list which needed in act method
       ArrayList<Block> allBlocks = new ArrayList<>(blocks);
       allBlocks.add(baseBlock);
-      playerTank.act(allBlocks);
+      Bullet bullet = playerTank.act(allBlocks);
+
+      int size = bullets.size();
+      for (int i = 0; i < size; i++) {
+         bullets.get(i).move();
+      }
+
+      for (int i = bullets.size() - 1; i >= 0; i--) {
+         for (int j = blocks.size() - 1; j >= 0; j--) {
+            Block block = blocks.get(j);
+            if (block.blocksBullets()) {
+               Bullet b = bullets.get(i);
+               if (b.getX() + Bullet.SIZE > block.getX() &&
+                   b.getX() < block.getX() + Block.SIZE &&
+                   b.getY() + Bullet.SIZE > block.getY() &&
+                   b.getY() < block.getY() + Block.SIZE) {
+                     b.deactivate();
+                     bullets.remove(i);
+                     if (block.isDestroyable()) blocks.remove(j);
+                     break;
+                  }
+            }
+         }
+      }
+
+      for (int i = bullets.size() - 1; i >= 0; i--) {
+         if(bullets.get(i).getX() + Bullet.SIZE < 0 ||
+            bullets.get(i).getX() > Level.GRID_WIDTH * Block.SIZE ||
+            bullets.get(i).getY() + Bullet.SIZE < 0 ||
+            bullets.get(i).getY() > Level.GRID_HEIGHT * Block.SIZE) {
+               bullets.get(i).deactivate();
+               bullets.remove(i);
+            }
+      }      
+
+      if(bullet != null) bullets.add(bullet);
    }
 }
