@@ -37,6 +37,7 @@ public class Game {
       activeLevel = new Level(difficulty);
       blocks = activeLevel.buildBlocks();
       baseBlock = activeLevel.buildBase();
+      blocks.add(baseBlock);
 
       int px = Level.PLAYER_SPAWN_GRID_X * Block.SIZE;
       int py = Level.PLAYER_SPAWN_GRID_Y * Block.SIZE;
@@ -89,12 +90,10 @@ public class Game {
    public void update() { // Added base block to allBlock list which needed in act method
       if(state != GameState.RUNNING) return;
 
-      ArrayList<Block> allBlocks = new ArrayList<>(blocks);
-      allBlocks.add(baseBlock);
-      Bullet bullet = playerTank.act(allBlocks);
+      Bullet bullet = playerTank.act(blocks);
 
       for (EnemyTank et : enemyTanks) {
-         Bullet enemyBullet = et.act(allBlocks);
+         Bullet enemyBullet = et.act(blocks);
          if(enemyBullet != null) bullets.add(enemyBullet);
       }
 
@@ -114,7 +113,13 @@ public class Game {
                    b.getY() < block.getY() + Block.SIZE) {
                      b.deactivate();
                      bullets.remove(i);
-                     if (block.isDestroyable()) blocks.remove(j);
+                     if (block.isDestroyable()) {
+                        if(block == baseBlock) {
+                           baseBlock.destroy();
+                           state = GameState.GAME_OVER;
+                        }
+                        blocks.remove(j);
+                     }
                      break;
                   }
             }

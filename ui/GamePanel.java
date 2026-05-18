@@ -38,7 +38,7 @@ public class GamePanel extends JPanel {
       }
 
       g.setColor(Color.WHITE);
-      g.fillRect(game.getBaseBlock().getX(), game.getBaseBlock().getY(), Block.SIZE, Block.SIZE);
+      if(!game.getBaseBlock().isDestroyed()) g.fillRect(game.getBaseBlock().getX(), game.getBaseBlock().getY(), Block.SIZE, Block.SIZE);
 
       g.setColor(Color.YELLOW);
       g.fillRect(game.getPlayerTank().getX(), game.getPlayerTank().getY(), Tank.SIZE, Tank.SIZE);
@@ -60,9 +60,9 @@ public class GamePanel extends JPanel {
       }
 
       if(game.getState() == GameState.GAME_OVER) {
-         g.setFont(new Font("Arial", Font.BOLD, 60));
+         g.setFont(new Font("Arial", Font.BOLD, 50));
          g.setColor(Color.RED);
-         g.drawString("GAME OVER", 536/2, 416/2);
+         g.drawString("GAME OVER", 536/2 - 150, 416/2);
       }
    }
    
