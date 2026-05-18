@@ -115,6 +115,7 @@ public class Game {
       }
 
       Bullet bullet = playerTank.act(blocks);
+      if(bullet != null) bullets.add(bullet);
 
       for (EnemyTank et : enemyTanks) {
          Bullet enemyBullet = et.act(blocks);
@@ -202,7 +203,5 @@ public class Game {
                bullets.remove(i);
             }
       }      
-
-      if(bullet != null) bullets.add(bullet);
    }
 }

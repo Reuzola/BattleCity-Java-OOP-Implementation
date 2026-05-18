@@ -23,12 +23,18 @@ public class GameLoop implements Runnable{
    @Override
    public void run() {
       while(running) {
+         long startTime = System.currentTimeMillis();
+
          game.update();
          panel.repaint();
-         try {
-            Thread.sleep(33);
-         } catch(InterruptedException e) {
-            System.err.println(e.getMessage());
+
+         long sleepTime = 33 - (System.currentTimeMillis() - startTime);
+         if(sleepTime > 0) {
+            try {
+               Thread.sleep(sleepTime);
+            } catch(InterruptedException e) {
+               System.err.println(e.getMessage());
+            }
          }
       }
    }
