@@ -60,9 +60,15 @@ public class GamePanel extends JPanel {
       }
 
       if(game.getState() == GameState.GAME_OVER) {
-         g.setFont(new Font("Arial", Font.BOLD, 50));
+         g.setFont(new Font("Arial", Font.BOLD, 40));
          g.setColor(Color.RED);
          g.drawString("GAME OVER", 536/2 - 150, 416/2);
+      }
+
+      if(game.getState() == GameState.LEVEL_COMPLETE) {
+         g.setFont(new Font("Arial", Font.BOLD, 40));
+         g.setColor(Color.GREEN);
+         g.drawString("LEVEL COMPLETE", 536/2 - 220, 416/2);
       }
    }
    

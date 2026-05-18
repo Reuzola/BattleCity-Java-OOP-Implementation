@@ -109,7 +109,7 @@ public class Game {
             case "F": enemyTanks.add(new FastEnemy(spawnX, spawnY)); break;
             case "A": enemyTanks.add(new ArmoredEnemy(spawnX, spawnY)); break;
          }
-         
+
          enemiesSpawned++;
          spawnTimer = 0;
       }
@@ -162,7 +162,14 @@ public class Game {
                      et.takeDamage(1);
                      b.deactivate();
                      bullets.remove(i);
-                     if(et.isDead()) enemyTanks.remove(j);
+                     if(et.isDead()) {
+                        enemiesKilled++;
+                        if(et instanceof BasicEnemy) score += 100;
+                        else if(et instanceof FastEnemy) score += 200;
+                        else if(et instanceof ArmoredEnemy) score += 400;
+                        enemyTanks.remove(j);
+                        if(enemiesKilled == MAX_TOTAL_ENEMIES) state = GameState.LEVEL_COMPLETE;
+                     }
                      break;
                   }
             }
