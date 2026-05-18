@@ -1,9 +1,11 @@
 package ui;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import game.Game;
+import game.Game.GameState;
 import model.Bullet;
 import model.blocks.*;
 import model.tanks.*;
@@ -55,6 +57,12 @@ public class GamePanel extends JPanel {
       for (Bullet bullet : game.getBullets()) {
          g.setColor(Color.WHITE);
          g.fillRect(bullet.getX(), bullet.getY(), Bullet.SIZE, Bullet.SIZE);
+      }
+
+      if(game.getState() == GameState.GAME_OVER) {
+         g.setFont(new Font("Arial", Font.BOLD, 60));
+         g.setColor(Color.RED);
+         g.drawString("GAME OVER", 536/2, 416/2);
       }
    }
    

@@ -14,6 +14,7 @@ public class Game {
    private Level activeLevel;
    private BaseBlock baseBlock;
    private PlayerTank playerTank;
+   private KeyHandler keyHandler;
 
    private ArrayList<Block> blocks;
    private ArrayList<EnemyTank> enemyTanks;
@@ -27,6 +28,7 @@ public class Game {
    private GameState state;
    
    public Game(int difficulty, KeyHandler keyHandler){
+      this.keyHandler = keyHandler;
       enemyTanks = new ArrayList<>();
       enemyTanks.add(new BasicEnemy(Level.ENEMY_SPAWN_GRID_X[1] * Block.SIZE, Level.ENEMY_SPAWN_GRID_Y * Block.SIZE));
       bullets = new ArrayList<>();
@@ -85,6 +87,8 @@ public class Game {
    }
    
    public void update() { // Added base block to allBlock list which needed in act method
+      if(state != GameState.RUNNING) return;
+
       ArrayList<Block> allBlocks = new ArrayList<>(blocks);
       allBlocks.add(baseBlock);
       Bullet bullet = playerTank.act(allBlocks);
@@ -141,7 +145,14 @@ public class Game {
                   playerTank.takeDamage(1);
                   b.deactivate();
                   bullets.remove(i);
-                  // if(playerTank.isDead())
+                  if(playerTank.isDead()) {
+                     lives--;
+                     if(lives > 0) { // Respawn
+                        int px = Level.PLAYER_SPAWN_GRID_X * Block.SIZE;
+                        int py = Level.PLAYER_SPAWN_GRID_Y * Block.SIZE;
+                        playerTank = new PlayerTank(px, py, keyHandler);
+                     } else state = GameState.GAME_OVER; // Game over
+                  }
                }
          }
       }
