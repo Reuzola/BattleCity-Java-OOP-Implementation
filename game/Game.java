@@ -4,8 +4,7 @@ import model.Bullet;
 import model.blocks.BaseBlock;
 import model.blocks.Block;
 import model.powerups.PowerUp;
-import model.tanks.EnemyTank;
-import model.tanks.PlayerTank;
+import model.tanks.*;
 import ui.KeyHandler;
 
 public class Game {
@@ -29,6 +28,7 @@ public class Game {
    
    public Game(int difficulty, KeyHandler keyHandler){
       enemyTanks = new ArrayList<>();
+      enemyTanks.add(new BasicEnemy(Level.ENEMY_SPAWN_GRID_X[1] * Block.SIZE, Level.ENEMY_SPAWN_GRID_Y * Block.SIZE));
       bullets = new ArrayList<>();
       powerUps = new ArrayList<>();
 
@@ -89,12 +89,17 @@ public class Game {
       allBlocks.add(baseBlock);
       Bullet bullet = playerTank.act(allBlocks);
 
+      for (EnemyTank et : enemyTanks) {
+         Bullet enemyBullet = et.act(allBlocks);
+         if(enemyBullet != null) bullets.add(enemyBullet);
+      }
+
       int size = bullets.size();
       for (int i = 0; i < size; i++) {
          bullets.get(i).move();
       }
 
-      for (int i = bullets.size() - 1; i >= 0; i--) {
+      for (int i = bullets.size() - 1; i >= 0; i--) { // Collision control of bullets with blocks
          for (int j = blocks.size() - 1; j >= 0; j--) {
             Block block = blocks.get(j);
             if (block.blocksBullets()) {
@@ -112,7 +117,7 @@ public class Game {
          }
       }
 
-      for (int i = bullets.size() - 1; i >= 0; i--) {
+      for (int i = bullets.size() - 1; i >= 0; i--) { // Collision control of bullets with game map
          if(bullets.get(i).getX() + Bullet.SIZE < 0 ||
             bullets.get(i).getX() > Level.GRID_WIDTH * Block.SIZE ||
             bullets.get(i).getY() + Bullet.SIZE < 0 ||

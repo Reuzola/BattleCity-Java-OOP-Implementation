@@ -43,23 +43,24 @@ public abstract class Tank {
       this.direction = direction;
    }
 
-   public void move(ArrayList<Block> blocks) {
+   public boolean move(ArrayList<Block> blocks) { // Returns tank is moved(true) or not(false)
       int newX = x + direction.getDx() * speed; // current + delta
       int newY = y + direction.getDy() * speed;
       if(newX < 0 || newX > Level.GRID_WIDTH * Block.SIZE - SIZE || // Checking if tank collides edges
-         newY < 0 || newY > Level.GRID_HEIGHT * Block.SIZE - SIZE) return;
+         newY < 0 || newY > Level.GRID_HEIGHT * Block.SIZE - SIZE) return false;
 
       for (Block b : blocks) {
          if(b.blocksTanks()) {
             if(newX < b.getX() + Block.SIZE &&  // Checking each block coordinates and compares
                newX + SIZE > b.getX() &&        // tank coordinates to check collision
                newY < b.getY() + Block.SIZE &&
-               newY + SIZE > b.getY()) return;
+               newY + SIZE > b.getY()) return false;
          }
       }
 
       x = newX; // If not collide (passes all return statements) update x and y
       y = newY;
+      return true;
    }
 
    public void takeDamage(int damage){
