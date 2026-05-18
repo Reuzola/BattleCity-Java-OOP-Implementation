@@ -117,6 +117,35 @@ public class Game {
          }
       }
 
+      for (int i = bullets.size() - 1; i >= 0; i--) { // Collision control of player-bullet enemy tank and enemy-bullet player tank
+         Bullet b = bullets.get(i);
+         if(b.getOwner() instanceof PlayerTank) { // If bullet shooted from player, its only effect enemy
+            for (int j = enemyTanks.size() - 1; j >= 0; j--) {
+               EnemyTank et = enemyTanks.get(j);
+               if(et.getX() + Tank.SIZE > b.getX() &&
+                  et.getX() < b.getX() + Bullet.SIZE &&
+                  et.getY() + Tank.SIZE > b.getY() &&
+                  et.getY() < b.getY() + Bullet.SIZE) {
+                     et.takeDamage(1);
+                     b.deactivate();
+                     bullets.remove(i);
+                     if(et.isDead()) enemyTanks.remove(j);
+                     break;
+                  }
+            }
+         } else { // If bullet shooted from enemy, its only effect player
+            if(playerTank.getX() + Tank.SIZE > b.getX() &&
+               playerTank.getX() < b.getX() + Bullet.SIZE &&
+               playerTank.getY() + Tank.SIZE > b.getY() &&
+               playerTank.getY() < b.getY() + Bullet.SIZE) {
+                  playerTank.takeDamage(1);
+                  b.deactivate();
+                  bullets.remove(i);
+                  // if(playerTank.isDead())
+               }
+         }
+      }
+
       for (int i = bullets.size() - 1; i >= 0; i--) { // Collision control of bullets with game map
          if(bullets.get(i).getX() + Bullet.SIZE < 0 ||
             bullets.get(i).getX() > Level.GRID_WIDTH * Block.SIZE ||
