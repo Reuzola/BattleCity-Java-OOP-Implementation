@@ -1,5 +1,6 @@
 package game;
 import java.util.ArrayList;
+import java.util.Collections;
 import model.blocks.*;
 
 public class Level {
@@ -30,8 +31,8 @@ public class Level {
       ".BB.BB.BB.BB.",
       ".............",
       ".BB.......BB.",
-      ".BB.BBEBB.BB.",
-      "....B...B...."
+      ".BB.BBBBB.BB.",
+      "....B.E.B...."
    };
    private static final String[] LEVEL_2_MAP = {
       ".............",
@@ -45,8 +46,8 @@ public class Level {
       ".GG.......GG.",
       ".....SWS.....",
       ".BBBB.W.BBBB.",
-      ".BBBB.WEBBBB.",
-      "....BB.BB...."
+      ".BBBB.W.BBBB.",
+      "....BBEBB...."
    };
    private static final String[] LEVEL_3_MAP = {
       ".............",
@@ -60,8 +61,8 @@ public class Level {
       ".SS.GG.GG.SS.",
       ".............",
       ".SS.......SS.",
-      ".SS.SSESS.SS.",
-      "....S...S...."
+      ".SS.SS.SS.SS.",
+      "....S.E.S...."
    };
 
    public Level(int difficulty){
@@ -126,5 +127,31 @@ public class Level {
       int py = BASE_GRID_Y * Block.SIZE;
 
       return new BaseBlock(px, py);
+   }
+
+   public ArrayList<String> buildEnemyComposition() { // Returns array of string. B for basic, F for fast, A for armored. Effected by difficulty
+      ArrayList<String> enemyDiff = new ArrayList<>();
+      switch(difficulty) {
+         case 1: 
+            for(int i = 0; i < 20; i++) { // 14B 4F 2A
+               if(i < 14) enemyDiff.add("B");
+               else if(i < 18) enemyDiff.add("F");
+               else enemyDiff.add("A");
+            } break;
+         case 2:
+            for(int i = 0; i < 20; i++) { // 8B 8F 4A
+               if(i < 8) enemyDiff.add("B");
+               else if(i < 16) enemyDiff.add("F");
+               else enemyDiff.add("A");
+            } break;
+         case 3:
+            for(int i = 0; i < 20; i++) { // 4B 8F 8A
+               if(i < 4) enemyDiff.add("B");
+               else if(i < 12) enemyDiff.add("F");
+               else enemyDiff.add("A");
+            } break;
+      }
+      Collections.shuffle(enemyDiff);
+      return enemyDiff;
    }
 }

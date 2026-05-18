@@ -11,6 +11,10 @@ public class Game {
 
    public enum GameState { RUNNING, PAUSED, GAME_OVER, LEVEL_COMPLETE }
 
+   public static final int MAX_ACTIVE_ENEMIES = 4;
+   public static final int MAX_TOTAL_ENEMIES = 20;
+   public static final int SPAWN_INTERVAL_FRAMES = 90; // Enemy tanks spawn every 3 seconds
+
    private Level activeLevel;
    private BaseBlock baseBlock;
    private PlayerTank playerTank;
@@ -20,21 +24,23 @@ public class Game {
    private ArrayList<EnemyTank> enemyTanks;
    private ArrayList<Bullet> bullets;
    private ArrayList<PowerUp> powerUps;
+   private ArrayList<String> enemyComposition;
 
    private int score;
    private int lives;
    private int enemiesKilled;
    private int enemiesSpawned;
+   private int spawnTimer;
    private GameState state;
    
    public Game(int difficulty, KeyHandler keyHandler){
       this.keyHandler = keyHandler;
       enemyTanks = new ArrayList<>();
-      enemyTanks.add(new BasicEnemy(Level.ENEMY_SPAWN_GRID_X[1] * Block.SIZE, Level.ENEMY_SPAWN_GRID_Y * Block.SIZE));
       bullets = new ArrayList<>();
       powerUps = new ArrayList<>();
 
       activeLevel = new Level(difficulty);
+      enemyComposition = activeLevel.buildEnemyComposition();
       blocks = activeLevel.buildBlocks();
       baseBlock = activeLevel.buildBase();
       blocks.add(baseBlock);
@@ -47,6 +53,7 @@ public class Game {
       lives = 3;
       enemiesKilled = 0;
       enemiesSpawned = 0;
+      spawnTimer = SPAWN_INTERVAL_FRAMES;
       state = GameState.RUNNING;
    }
 
@@ -87,8 +94,25 @@ public class Game {
       return state;
    }
    
-   public void update() { // Added base block to allBlock list which needed in act method
+   public void update() { // General game update method
       if(state != GameState.RUNNING) return;
+
+      spawnTimer++;
+      if(spawnTimer >= SPAWN_INTERVAL_FRAMES && enemyTanks.size() < MAX_ACTIVE_ENEMIES && enemiesSpawned < MAX_TOTAL_ENEMIES) {
+         int randomIndex = (int)(Math.random() * Level.ENEMY_SPAWN_GRID_X.length);
+         String type = enemyComposition.get(enemiesSpawned);
+         int spawnX = Level.ENEMY_SPAWN_GRID_X[randomIndex] * Block.SIZE;
+         int spawnY = Level.ENEMY_SPAWN_GRID_Y * Block.SIZE;
+
+         switch(type) {
+            case "B": enemyTanks.add(new BasicEnemy(spawnX, spawnY)); break;
+            case "F": enemyTanks.add(new FastEnemy(spawnX, spawnY)); break;
+            case "A": enemyTanks.add(new ArmoredEnemy(spawnX, spawnY)); break;
+         }
+         
+         enemiesSpawned++;
+         spawnTimer = 0;
+      }
 
       Bullet bullet = playerTank.act(blocks);
 
