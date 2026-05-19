@@ -1,8 +1,7 @@
 package game;
 import java.util.ArrayList;
 import model.Bullet;
-import model.blocks.BaseBlock;
-import model.blocks.Block;
+import model.blocks.*;
 import model.powerups.PowerUp;
 import model.tanks.*;
 import ui.KeyHandler;
@@ -14,6 +13,8 @@ public class Game {
    public static final int MAX_ACTIVE_ENEMIES = 4;
    public static final int MAX_TOTAL_ENEMIES = 20;
    public static final int SPAWN_INTERVAL_FRAMES = 90; // Enemy tanks spawn every 3 seconds
+   public static final int FREEZE_DURATION = 300; // 10 seconds
+   public static final int SHOVEL_DURATION = 600; // 20 seconds
 
    private Level activeLevel;
    private BaseBlock baseBlock;
@@ -33,6 +34,8 @@ public class Game {
    private int spawnTimer;
    private int elapsedFrames;
    private int currentDifficulty;
+   private int freezeTicks;
+   private int shovelTicks;
    private GameState state;
    
    public Game(int difficulty, KeyHandler keyHandler){
@@ -58,6 +61,8 @@ public class Game {
       enemiesSpawned = 0;
       elapsedFrames = 0;
       spawnTimer = SPAWN_INTERVAL_FRAMES;
+      freezeTicks = 0;
+      shovelTicks = 0;
       state = GameState.RUNNING;
    }
 
@@ -100,12 +105,80 @@ public class Game {
    public GameState getState() {
       return state;
    }
+   public boolean isFreezeActive() {
+      return freezeTicks > 0;
+   }
+   public boolean isShovelActive() {
+      return shovelTicks > 0;
+   }
 
    public void togglePause() {
       if(state == GameState.RUNNING) state = GameState.PAUSED;
       else if(state == GameState.PAUSED) state = GameState.RUNNING;
    }
 
+   public void activateFreeze() {
+      freezeTicks = FREEZE_DURATION;
+   }
+
+   public void activateShovel() {
+      shovelTicks = SHOVEL_DURATION;
+      applyShovelWalls(true);
+   }
+
+   public void addLife() {
+      lives++;
+   }
+
+   public void bombVisibleEnemies() {
+      for(int i = enemyTanks.size() - 1; i >= 0; i--) {
+         EnemyTank et = enemyTanks.get(i);
+         if(isHiddenInBush(et.getX(), et.getY())) continue; // Bush protected enemies survive
+         enemiesKilled++;
+         if(et instanceof BasicEnemy) score += 100;
+         else if(et instanceof FastEnemy) score += 200;
+         else if(et instanceof ArmoredEnemy) score += 400;
+         enemyTanks.remove(i);
+      }
+      if(enemiesKilled >= MAX_TOTAL_ENEMIES) state = GameState.LEVEL_COMPLETE;
+   }
+
+   private boolean isHiddenInBush(int x, int y) {
+      for(Block b : blocks) {
+         if(b instanceof BushBlock) {
+            if(x + Tank.SIZE > b.getX() &&
+               x < b.getX() + Block.SIZE &&
+               y + Tank.SIZE > b.getY() &&
+               y < b.getY() + Block.SIZE) return true;
+         }
+      }
+      return false;
+   }
+
+   private void applyShovelWalls(boolean activate) {
+      int baseX = baseBlock.getX();
+      int baseY = baseBlock.getY();
+      int[][] offsets = { // 8 cells around base (skip center which is base itself)
+         {-1,-1},{0,-1},{1,-1},
+         {-1, 0},        {1, 0},
+         {-1, 1},{0, 1},{1, 1}
+      };
+
+      for(int[] o : offsets) {
+         int wx = baseX + o[0] * Block.SIZE;
+         int wy = baseY + o[1] * Block.SIZE;
+         if(wx < 0 || wx >= Level.GRID_WIDTH * Block.SIZE || wy < 0 || wy >= Level.GRID_HEIGHT * Block.SIZE) continue;
+         
+         for(int i = blocks.size() - 1; i >= 0; i--) { // Remove any existing block at this cell (except base itself)
+            Block b = blocks.get(i);
+            if(b == baseBlock) continue;
+            if(b.getX() == wx && b.getY() == wy) blocks.remove(i);
+         }
+         if(activate) blocks.add(new SteelBlock(wx, wy));
+         else blocks.add(new BrickBlock(wx, wy));
+      }
+   }
+   
    public void advenceToNextLevel() {
       if(currentDifficulty >= 3) { // Already last level
          state = GameState.GAME_OVER;
@@ -130,6 +203,8 @@ public class Game {
       enemiesKilled = 0; // Score and lives carry over
       enemiesSpawned = 0;
       spawnTimer = SPAWN_INTERVAL_FRAMES;
+      freezeTicks = 0;
+      shovelTicks = 0;
       state = GameState.RUNNING;
    }
    
@@ -137,6 +212,11 @@ public class Game {
       if(state != GameState.RUNNING) return;
 
       elapsedFrames++;
+      if(freezeTicks > 0) freezeTicks--;
+      if(shovelTicks > 0) {
+         shovelTicks--;
+         if(shovelTicks == 0) applyShovelWalls(false); // Restore brick walls when shovel expires
+      }
       spawnTimer++;
       if(spawnTimer >= SPAWN_INTERVAL_FRAMES && enemyTanks.size() < MAX_ACTIVE_ENEMIES && enemiesSpawned < MAX_TOTAL_ENEMIES) {
          int randomIndex = (int)(Math.random() * Level.ENEMY_SPAWN_GRID_X.length);
@@ -157,9 +237,11 @@ public class Game {
       Bullet bullet = playerTank.act(blocks);
       if(bullet != null) bullets.add(bullet);
 
-      for (EnemyTank et : enemyTanks) {
-         Bullet enemyBullet = et.act(blocks);
-         if(enemyBullet != null) bullets.add(enemyBullet);
+      if(!isFreezeActive()) {
+         for(EnemyTank et : enemyTanks) {
+            Bullet enemyBullet = et.act(blocks);
+            if(enemyBullet != null) bullets.add(enemyBullet);
+         }
       }
 
       int size = bullets.size();
