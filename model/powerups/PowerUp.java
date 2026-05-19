@@ -1,5 +1,5 @@
 package model.powerups;
-import model.tanks.PlayerTank;
+import game.Game;
 
 public abstract class PowerUp {
    
@@ -28,5 +28,5 @@ public abstract class PowerUp {
       collected = true;
    }
 
-   public abstract void applyEffect(PlayerTank player);
+   public abstract void applyEffect(Game game);
 }

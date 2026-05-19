@@ -1,5 +1,5 @@
 package model.powerups;
-import model.tanks.PlayerTank;
+import game.Game;
 
 public class ShieldPowerUp extends PowerUp {
 
@@ -8,7 +8,7 @@ public class ShieldPowerUp extends PowerUp {
    }
 
    @Override
-   public void applyEffect(PlayerTank player){
-      // TODO
+   public void applyEffect(Game game){
+      game.getPlayerTank().activateShield();
    }
 }

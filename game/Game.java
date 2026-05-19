@@ -260,7 +260,7 @@ public class Game {
                    b.getY() < block.getY() + Block.SIZE) {
                      b.deactivate();
                      bullets.remove(i);
-                     if (block.isDestroyable()) {
+                     if (block.isDestroyable() || (block instanceof SteelBlock && b.getOwner() instanceof PlayerTank && playerTank.getStarCount() >= 3)) {
                         if(block == baseBlock && b.getOwner() instanceof EnemyTank) {
                            baseBlock.destroy();
                            state = GameState.GAME_OVER;
