@@ -10,6 +10,7 @@ public class GameLoop implements Runnable{
    private final GamePanel panel;
    private boolean running;
    private boolean gameOverHandled;
+   private int levelCompleteTimer;
 
    public GameLoop(Game game, GamePanel panel) {
       this.game = game;
@@ -48,6 +49,16 @@ public class GameLoop implements Runnable{
          if(game.getState() == Game.GameState.GAME_OVER && !gameOverHandled) {
             gameOverHandled = true;
             handleGameOver();
+         }
+
+         if(game.getState() == Game.GameState.LEVEL_COMPLETE) {
+            levelCompleteTimer++;
+            if(levelCompleteTimer >= 90) { // Waits 3 seconds to advence to next level
+               levelCompleteTimer = 0;
+               game.advenceToNextLevel();
+            }
+         } else {
+            levelCompleteTimer = 0; // Reset when not in LEVEL_COMPLETE
          }
 
          long sleepTime = 33 - (System.currentTimeMillis() - startTime);

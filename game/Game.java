@@ -32,10 +32,12 @@ public class Game {
    private int enemiesSpawned;
    private int spawnTimer;
    private int elapsedFrames;
+   private int currentDifficulty;
    private GameState state;
    
    public Game(int difficulty, KeyHandler keyHandler){
       this.keyHandler = keyHandler;
+      this.currentDifficulty = difficulty;
       enemyTanks = new ArrayList<>();
       bullets = new ArrayList<>();
       powerUps = new ArrayList<>();
@@ -102,6 +104,33 @@ public class Game {
    public void togglePause() {
       if(state == GameState.RUNNING) state = GameState.PAUSED;
       else if(state == GameState.PAUSED) state = GameState.RUNNING;
+   }
+
+   public void advenceToNextLevel() {
+      if(currentDifficulty >= 3) { // Already last level
+         state = GameState.GAME_OVER;
+         return;
+      }
+      currentDifficulty++;
+
+      activeLevel = new Level(currentDifficulty); // Rebuild world for the new level
+      enemyComposition = activeLevel.buildEnemyComposition();
+      blocks = activeLevel.buildBlocks();
+      baseBlock = activeLevel.buildBase();
+      blocks.add(baseBlock);
+
+      enemyTanks.clear(); // Clear all lists
+      bullets.clear();
+      powerUps.clear();
+
+      int px = Level.PLAYER_SPAWN_GRID_X * Block.SIZE; // Respawn player at the level's spawn point
+      int py = Level.PLAYER_SPAWN_GRID_Y * Block.SIZE;
+      playerTank = new PlayerTank(px, py, keyHandler);
+
+      enemiesKilled = 0; // Score and lives carry over
+      enemiesSpawned = 0;
+      spawnTimer = SPAWN_INTERVAL_FRAMES;
+      state = GameState.RUNNING;
    }
    
    public void update() { // General game update method
