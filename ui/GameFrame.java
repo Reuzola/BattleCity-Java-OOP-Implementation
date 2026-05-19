@@ -28,6 +28,8 @@ public class GameFrame extends JFrame {
       menuBar.add(menu);
       setJMenuBar(menuBar);
 
+      aboutItem.addActionListener(e -> new AboutDialog(this).setVisible(true));
+      helpItem.addActionListener(e -> new HelpDialog(this).setVisible(true));
       highScoresItem.addActionListener(e -> new HighScorePanel(this).setVisible(true));
       exitItem.addActionListener(e -> System.exit(0));
 
