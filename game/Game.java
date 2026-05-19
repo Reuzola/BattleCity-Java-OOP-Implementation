@@ -139,11 +139,11 @@ public class Game {
                      b.deactivate();
                      bullets.remove(i);
                      if (block.isDestroyable()) {
-                        if(block == baseBlock) {
+                        if(block == baseBlock && b.getOwner() instanceof EnemyTank) {
                            baseBlock.destroy();
                            state = GameState.GAME_OVER;
                         }
-                        blocks.remove(j);
+                        if(block != baseBlock) blocks.remove(j);
                      }
                      break;
                   }

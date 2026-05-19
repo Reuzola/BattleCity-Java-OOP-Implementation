@@ -6,7 +6,7 @@ import model.blocks.Block;
 
 public abstract class EnemyTank extends Tank {
 
-   private static final int FIRE_COOLDOWN_FRAMES = 60; // Equals bullet per 2 seconds. 4 times slower than player bullets
+   private static final int FIRE_COOLDOWN_FRAMES = 90; // Equals bullet per 3 seconds
    private int fireCooldown;
 
    public EnemyTank(int x, int y, int health, int speed) {
@@ -31,7 +31,7 @@ public abstract class EnemyTank extends Tank {
          setDirection(d[randomIndex]);
       }
       
-      if(fireCooldown == 0 && Math.random() < 0.02) { // %2 chance to shoot every tick AND waits for cooldown to shoot again
+      if(fireCooldown == 0 && Math.random() < 0.01) { // %1 chance to shoot every tick AND waits for cooldown to shoot again
          fireCooldown = FIRE_COOLDOWN_FRAMES;
          return fire();
       } else return null;
