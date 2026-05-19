@@ -31,6 +31,7 @@ public class Game {
    private int enemiesKilled;
    private int enemiesSpawned;
    private int spawnTimer;
+   private int elapsedFrames;
    private GameState state;
    
    public Game(int difficulty, KeyHandler keyHandler){
@@ -53,6 +54,7 @@ public class Game {
       lives = 3;
       enemiesKilled = 0;
       enemiesSpawned = 0;
+      elapsedFrames = 0;
       spawnTimer = SPAWN_INTERVAL_FRAMES;
       state = GameState.RUNNING;
    }
@@ -90,6 +92,9 @@ public class Game {
    public int getEnemiesSpawned() {
       return enemiesSpawned;
    }
+   public int getElapsedSeconds() {
+      return elapsedFrames / 30; // 30 frames at every second
+   }
    public GameState getState() {
       return state;
    }
@@ -97,6 +102,7 @@ public class Game {
    public void update() { // General game update method
       if(state != GameState.RUNNING) return;
 
+      elapsedFrames++;
       spawnTimer++;
       if(spawnTimer >= SPAWN_INTERVAL_FRAMES && enemyTanks.size() < MAX_ACTIVE_ENEMIES && enemiesSpawned < MAX_TOTAL_ENEMIES) {
          int randomIndex = (int)(Math.random() * Level.ENEMY_SPAWN_GRID_X.length);

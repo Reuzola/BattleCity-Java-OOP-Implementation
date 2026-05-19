@@ -28,6 +28,7 @@ public class GameFrame extends JFrame {
       menuBar.add(menu);
       setJMenuBar(menuBar);
 
+      highScoresItem.addActionListener(e -> new HighScorePanel(this).setVisible(true));
       exitItem.addActionListener(e -> System.exit(0));
 
       KeyHandler keyHandler = new KeyHandler();

@@ -1,4 +1,7 @@
 package game;
+import javax.swing.JOptionPane;
+import data.ScoreEntry;
+import data.ScoreManager;
 import ui.GamePanel;
 
 public class GameLoop implements Runnable{
@@ -6,6 +9,7 @@ public class GameLoop implements Runnable{
    private final Game game;
    private final GamePanel panel;
    private boolean running;
+   private boolean gameOverHandled;
 
    public GameLoop(Game game, GamePanel panel) {
       this.game = game;
@@ -20,6 +24,19 @@ public class GameLoop implements Runnable{
 
    public void stop() { running = false; }
 
+   private void handleGameOver() { // Enter user name to append user score to csv file when game over
+      String name = JOptionPane.showInputDialog(
+         panel,
+         "Game Over!\nScore: " + game.getScore() + "\nTime: " + game.getElapsedSeconds() + "s\n\nEnter your name:",
+         "Game Over",
+         JOptionPane.PLAIN_MESSAGE
+      );
+      if(name == null || name.trim().isEmpty()) name = "Anonymous";
+
+      String date = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date());
+      ScoreManager.saveScore(new ScoreEntry(name, date, game.getElapsedSeconds(), game.getScore()));
+   }
+
    @Override
    public void run() {
       while(running) {
@@ -27,6 +44,11 @@ public class GameLoop implements Runnable{
 
          game.update();
          panel.repaint();
+
+         if(game.getState() == Game.GameState.GAME_OVER && !gameOverHandled) {
+            gameOverHandled = true;
+            handleGameOver();
+         }
 
          long sleepTime = 33 - (System.currentTimeMillis() - startTime);
          if(sleepTime > 0) {
