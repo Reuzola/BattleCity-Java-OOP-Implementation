@@ -65,6 +65,26 @@ public class GamePanel extends JPanel {
          g.setColor(Color.GREEN);
          g.drawString("LEVEL COMPLETE", 536/2 - 220, 416/2);
       }
+
+      g.setColor(new Color(60, 60, 60)); // HUD on the right side(416-536)
+      g.fillRect(416, 0, 120, 416);
+
+      g.setFont(new Font("Arial", Font.BOLD, 16)); // Lives title
+      g.setColor(Color.WHITE);
+      g.drawString("LIVES", 444, 30);
+
+      g.setFont(new Font("Arial", Font.BOLD, 32)); // Lives count
+      g.drawString(String.valueOf(game.getLives()), 462, 65);
+
+      g.setFont(new Font("Arial", Font.BOLD, 16)); // Score title
+      g.drawString("SCORE", 444, 110);
+
+      g.setFont(new Font("Arial", Font.BOLD, 20)); // Score value
+      g.drawString(String.valueOf(game.getScore()), 432, 140);
+
+      g.setFont(new Font("Arial", Font.BOLD, 14)); // Enemies remaining
+      g.drawString("ENEMIES", 440, 180);
+      g.drawString("LEFT: " + (Game.MAX_TOTAL_ENEMIES - game.getEnemiesKilled()), 430, 200);
    }
 
    private BufferedImage getPlayerSprite(Direction d) { // Helper for determine player tanks direction
