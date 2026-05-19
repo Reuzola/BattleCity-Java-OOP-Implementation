@@ -66,6 +66,12 @@ public class GamePanel extends JPanel {
          g.drawString("LEVEL COMPLETE", 536/2 - 220, 416/2);
       }
 
+      if(game.getState() == GameState.PAUSED) { // PAUSED title
+         g.setFont(new Font("Arial", Font.BOLD, 40));
+         g.setColor(Color.YELLOW);
+         g.drawString("PAUSED", 536/2 - 120, 416/2);
+      }
+
       g.setColor(new Color(60, 60, 60)); // HUD on the right side(416-536)
       g.fillRect(416, 0, 120, 416);
 

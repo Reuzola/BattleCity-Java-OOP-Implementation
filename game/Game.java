@@ -98,6 +98,11 @@ public class Game {
    public GameState getState() {
       return state;
    }
+
+   public void togglePause() {
+      if(state == GameState.RUNNING) state = GameState.PAUSED;
+      else if(state == GameState.PAUSED) state = GameState.RUNNING;
+   }
    
    public void update() { // General game update method
       if(state != GameState.RUNNING) return;

@@ -17,6 +17,7 @@ public class GameFrame extends JFrame {
       JMenuItem highScoresItem = new JMenuItem("High Scores");
       JMenuItem helpItem = new JMenuItem("Help");
       JMenuItem aboutItem = new JMenuItem("About");
+      JMenuItem pauseItem = new JMenuItem("Pause");
       JMenuItem exitItem = new JMenuItem("Exit");
       menu.add(newGameItem);
       menu.add(mapEditorItem);
@@ -24,6 +25,7 @@ public class GameFrame extends JFrame {
       menu.add(highScoresItem);
       menu.add(helpItem);
       menu.add(aboutItem);
+      menu.add(pauseItem);
       menu.add(exitItem);
       menuBar.add(menu);
       setJMenuBar(menuBar);
@@ -35,7 +37,12 @@ public class GameFrame extends JFrame {
 
       KeyHandler keyHandler = new KeyHandler();
       Game game = new Game(1, keyHandler);
+      keyHandler.setGame(game);
       GamePanel gamePanel = new GamePanel(game, keyHandler);
+      pauseItem.addActionListener(e -> {
+         game.togglePause();
+         gamePanel.requestFocusInWindow();
+      });
       add(gamePanel);
       pack();
       setLocationRelativeTo(null);

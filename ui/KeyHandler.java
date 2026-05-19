@@ -1,6 +1,7 @@
 package ui;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import game.Game;
 
 public class KeyHandler implements KeyListener {
    
@@ -10,6 +11,12 @@ public class KeyHandler implements KeyListener {
    public boolean rightPressed;
    public boolean firePressed;
 
+   private Game game;
+
+   public void setGame(Game game) {
+      this.game = game;
+   }
+
    @Override
    public void keyPressed(KeyEvent e) { // Updates flags when key pressed on keybord
       switch(e.getKeyCode()) {
@@ -18,6 +25,7 @@ public class KeyHandler implements KeyListener {
          case KeyEvent.VK_S: downPressed = true; break;
          case KeyEvent.VK_D: rightPressed = true; break;
          case KeyEvent.VK_SPACE: firePressed = true; break;
+         case KeyEvent.VK_P: if(game != null) game.togglePause(); break;
       }
    }
 
