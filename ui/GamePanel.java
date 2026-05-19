@@ -10,6 +10,13 @@ import game.Game.GameState;
 import model.Bullet;
 import model.Direction;
 import model.blocks.*;
+import model.powerups.BombPowerUp;
+import model.powerups.ClockPowerUp;
+import model.powerups.LifePowerUp;
+import model.powerups.PowerUp;
+import model.powerups.ShieldPowerUp;
+import model.powerups.ShovelPowerUp;
+import model.powerups.StarPowerUp;
 import model.tanks.*;
 
 public class GamePanel extends JPanel {
@@ -36,6 +43,17 @@ public class GamePanel extends JPanel {
          else if(block instanceof WaterBlock) img = Sprites.WATER;
          else if(block instanceof BushBlock)  img = Sprites.BUSH; // Skips base block
          if(img != null) g.drawImage(img, block.getX(), block.getY(), Block.SIZE, Block.SIZE, null);
+      }
+
+      for (PowerUp pu : game.getPowerUps()) { // Powerups draw
+         BufferedImage img = null;
+         if(pu instanceof LifePowerUp) img = Sprites.LIFE;
+         else if(pu instanceof StarPowerUp) img = Sprites.STAR;
+         else if(pu instanceof BombPowerUp) img = Sprites.BOMB;
+         else if(pu instanceof ClockPowerUp) img = Sprites.CLOCK;
+         else if(pu instanceof ShovelPowerUp) img = Sprites.SHOVEL;
+         else if(pu instanceof ShieldPowerUp) img = Sprites.SHIELD;
+         if(img != null) g.drawImage(img, pu.getX(), pu.getY(), PowerUp.SIZE, PowerUp.SIZE, null);
       }
 
       if(!game.getBaseBlock().isDestroyed()) { // Base block draw if not destroyed

@@ -32,6 +32,13 @@ public class Sprites {
    public static BufferedImage ARMORED_DOWN;
    public static BufferedImage ARMORED_RIGHT;
 
+   public static BufferedImage LIFE; // Power-up icons
+   public static BufferedImage STAR;
+   public static BufferedImage BOMB;
+   public static BufferedImage CLOCK;
+   public static BufferedImage SHOVEL;
+   public static BufferedImage SHIELD;
+
    public static void load() {
       try {
          BufferedImage sheet = ImageIO.read(new File("assets/general_sprites.png")); // Read image
@@ -61,6 +68,13 @@ public class Sprites {
          ARMORED_LEFT  = sheet.getSubimage(160, 0, 16, 16);
          ARMORED_DOWN  = sheet.getSubimage(192, 0, 16, 16);
          ARMORED_RIGHT = sheet.getSubimage(224, 0, 16, 16);
+
+         SHIELD = sheet.getSubimage(256, 112, 16, 16); // Power-up pixels in image
+         CLOCK  = sheet.getSubimage(272, 112, 16, 16);
+         SHOVEL = sheet.getSubimage(288, 112, 16, 16);
+         STAR   = sheet.getSubimage(304, 112, 16, 16);
+         BOMB   = sheet.getSubimage(320, 112, 16, 16);
+         LIFE   = sheet.getSubimage(336, 112, 16, 16);
 
       } catch(IOException e) {
          System.err.println("Sprite not found: " + e.getMessage());

@@ -2,7 +2,7 @@ package game;
 import java.util.ArrayList;
 import model.Bullet;
 import model.blocks.*;
-import model.powerups.PowerUp;
+import model.powerups.*;
 import model.tanks.*;
 import ui.KeyHandler;
 
@@ -178,6 +178,41 @@ public class Game {
          else blocks.add(new BrickBlock(wx, wy));
       }
    }
+
+   private void spawnRandomPowerUp() { // Spans random powerup in any empty area in map
+      for(int i = 0; i < 10; i++) {
+         int rx = (int)(Math.random() * Level.GRID_WIDTH);
+         int ry = (int)(Math.random() * Level.GRID_HEIGHT);
+
+         int px = rx * Block.SIZE;
+         int py = ry * Block.SIZE;
+
+         boolean isOccupied = false;
+         for (Block b : blocks) {
+            if(b.blocksTanks()) {
+               if(b.getX() == px && b.getY() == py) {
+                  isOccupied = true;
+                  break;
+               }
+            }
+         }
+
+         if(!isOccupied) {
+            PowerUp pu = null;
+            switch((int)(Math.random() * 6)) {
+               case 0: pu = new BombPowerUp(px, py); break;
+               case 1: pu = new ClockPowerUp(px, py); break;
+               case 2: pu = new LifePowerUp(px, py); break;
+               case 3: pu = new ShieldPowerUp(px, py); break;
+               case 4: pu = new ShovelPowerUp(px, py); break;
+               case 5: pu = new StarPowerUp(px, py); break;
+            }
+
+            if(pu != null) powerUps.add(pu);
+            return;
+         }
+      }
+   }
    
    public void advenceToNextLevel() {
       if(currentDifficulty >= 3) { // Already last level
@@ -291,6 +326,7 @@ public class Game {
                         else if(et instanceof FastEnemy) score += 200;
                         else if(et instanceof ArmoredEnemy) score += 400;
                         enemyTanks.remove(j);
+                        if(Math.random() < 0.15) spawnRandomPowerUp();
                         if(enemiesKilled == MAX_TOTAL_ENEMIES) state = GameState.LEVEL_COMPLETE;
                      }
                      break;
@@ -324,6 +360,17 @@ public class Game {
                bullets.get(i).deactivate();
                bullets.remove(i);
             }
-      }      
+      }
+      
+      for (int i = powerUps.size() - 1; i >= 0; i--){
+         if(powerUps.get(i).getX() + PowerUp.SIZE > playerTank.getX() &&
+            powerUps.get(i).getX() < playerTank.getX() + Tank.SIZE &&
+            powerUps.get(i).getY() + PowerUp.SIZE > playerTank.getY() &&
+            powerUps.get(i).getY() < playerTank.getY() + Tank.SIZE) {
+               powerUps.get(i).collect();
+               powerUps.get(i).applyEffect(this);
+               powerUps.remove(i);
+            }
+      }
    }
 }
