@@ -176,6 +176,7 @@ public class Game {
          if(et instanceof BasicEnemy) score += 100;
          else if(et instanceof FastEnemy) score += 200;
          else if(et instanceof ArmoredEnemy) score += 400;
+         ui.SoundPlayer.play("explosion.wav");
          enemyTanks.remove(i);
       }
       if(enemiesKilled >= MAX_TOTAL_ENEMIES) state = GameState.LEVEL_COMPLETE;
@@ -360,6 +361,7 @@ public class Game {
                      bullets.remove(i);
                      if(et.isDead()) {
                         enemiesKilled++;
+                        ui.SoundPlayer.play("explosion.wav");
                         if(et instanceof BasicEnemy) score += 100;
                         else if(et instanceof FastEnemy) score += 200;
                         else if(et instanceof ArmoredEnemy) score += 400;
@@ -406,6 +408,7 @@ public class Game {
             powerUps.get(i).getY() + PowerUp.SIZE > playerTank.getY() &&
             powerUps.get(i).getY() < playerTank.getY() + Tank.SIZE) {
                powerUps.get(i).collect();
+               ui.SoundPlayer.play("powerup.wav");
                powerUps.get(i).applyEffect(this);
                powerUps.remove(i);
             }

@@ -26,6 +26,7 @@ public class GameLoop implements Runnable{
    public void stop() { running = false; }
 
    private void handleGameOver() { // Enter user name to append user score to csv file when game over
+      ui.SoundPlayer.play("gameover.wav");
       String name = JOptionPane.showInputDialog(
          panel,
          "Game Over!\nScore: " + game.getScore() + "\nTime: " + game.getElapsedSeconds() + "s\n\nEnter your name:",

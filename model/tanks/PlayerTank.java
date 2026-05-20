@@ -59,6 +59,7 @@ public class PlayerTank extends Tank {
       }
       if(keyHandler.firePressed && fireCooldown == 0) { // Waits for cooldown to shoot again
          fireCooldown = (starCount >= 2) ? FIRE_COOLDOWN_FRAMES / 2 : FIRE_COOLDOWN_FRAMES;
+         ui.SoundPlayer.play("fire.wav");
          return fire();
       } else return null;
    }
