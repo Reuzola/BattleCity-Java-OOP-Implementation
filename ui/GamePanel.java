@@ -40,8 +40,7 @@ public class GamePanel extends JPanel {
          BufferedImage img = null;
          if(block instanceof BrickBlock) img = Sprites.BRICK;
          else if(block instanceof SteelBlock) img = Sprites.STEEL;
-         else if(block instanceof WaterBlock) img = Sprites.WATER;
-         else if(block instanceof BushBlock)  img = Sprites.BUSH; // Skips base block
+         else if(block instanceof WaterBlock) img = Sprites.WATER; // Skips base and bush block
          if(img != null) g.drawImage(img, block.getX(), block.getY(), Block.SIZE, Block.SIZE, null);
       }
 
@@ -70,6 +69,12 @@ public class GamePanel extends JPanel {
       g.setColor(Color.WHITE); // Bullets draw
       for (Bullet bullet : game.getBullets()) {
          g.fillRect(bullet.getX(), bullet.getY(), Bullet.SIZE, Bullet.SIZE);
+      }
+
+      for (Block block : game.getBlocks()) { // Bushes drawn last so they cover tanks (hiding mechanic)
+         if(block instanceof BushBlock) {
+            g.drawImage(Sprites.BUSH, block.getX(), block.getY(), Block.SIZE, Block.SIZE, null);
+         }
       }
 
       if(game.getState() == GameState.GAME_OVER) { // GAME OVER title
