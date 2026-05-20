@@ -40,6 +40,17 @@ public class GameFrame extends JFrame {
       aboutItem.addActionListener(e -> new AboutDialog(this).setVisible(true));
       helpItem.addActionListener(e -> new HelpDialog(this).setVisible(true));
       highScoresItem.addActionListener(e -> new HighScorePanel(this).setVisible(true));
+      mapEditorItem.addActionListener(e -> {
+         Game.GameState prev = game.getState();
+         if(prev == Game.GameState.RUNNING) game.setState(Game.GameState.PAUSED); // Freeze world while editing
+
+         MapEditorPanel editor = new MapEditorPanel(this); // Modal, blocks here until closed
+         editor.setLocationRelativeTo(this);
+         editor.setVisible(true);
+
+         if(prev == Game.GameState.RUNNING) game.setState(Game.GameState.RUNNING); // Restore only if we paused it
+         gamePanel.requestFocusInWindow();
+      });
       newGameItem.addActionListener(e -> {
          String[] options = {"Level 1", "Level 2", "Level 3"};
          int choice = JOptionPane.showOptionDialog(

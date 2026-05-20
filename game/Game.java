@@ -117,6 +117,9 @@ public class Game {
    public boolean isShovelActive() {
       return shovelTicks > 0;
    }
+   public void setState(GameState state) {
+      this.state = state;
+   }
 
    public void togglePause() {
       if(state == GameState.RUNNING) state = GameState.PAUSED;
