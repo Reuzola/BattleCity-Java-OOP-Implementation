@@ -2,6 +2,7 @@ package ui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.*;
 import game.Level;
 import model.blocks.Block;
 
@@ -120,10 +121,53 @@ public class MapEditorPanel extends JDialog {
    }
 
    private void saveMap() {
-      // TODO next step
+      try {
+         File dir = new File("maps");
+         if(!dir.exists()) dir.mkdirs(); // Create maps directory if missing
+
+         BufferedWriter bw = new BufferedWriter(new FileWriter("maps/custom.map"));
+         for (int y = 0; y < Level.GRID_HEIGHT; y++) {
+            StringBuilder line = new StringBuilder();
+            for (int x = 0; x < Level.GRID_WIDTH; x++) {
+               if(x == Level.BASE_GRID_X && y == Level.BASE_GRID_Y) line.append('E'); // Base always at fixed cell
+               else line.append(grid[y][x]);
+            }
+            bw.write(line.toString());
+            bw.newLine();
+         }
+         bw.close();
+         JOptionPane.showMessageDialog(this, "Map saved successfully.", "Save", JOptionPane.INFORMATION_MESSAGE);
+      } catch(IOException e) {
+         JOptionPane.showMessageDialog(this, "Error saving map: " + e.getMessage(), "Save Failed", JOptionPane.ERROR_MESSAGE);
+      }
    }
 
    private void loadMap() {
-      // TODO next step
+      File f = new File("maps/custom.map");
+      if(!f.exists()) {
+         JOptionPane.showMessageDialog(this, "No saved map found.", "Load", JOptionPane.WARNING_MESSAGE);
+         return;
+      }
+      try {
+         BufferedReader br = new BufferedReader(new FileReader(f));
+         for (int y = 0; y < Level.GRID_HEIGHT; y++) {
+            String line = br.readLine();
+            if(line == null || line.length() < Level.GRID_WIDTH) { // Corrupted or short file
+               br.close();
+               JOptionPane.showMessageDialog(this, "Map file is corrupted.", "Load Failed", JOptionPane.ERROR_MESSAGE);
+               return;
+            }
+            for (int x = 0; x < Level.GRID_WIDTH; x++) {
+               char c = line.charAt(x);
+               if(c == 'E') grid[y][x] = '.'; // Base is implicit, do not store as a placeable cell
+               else grid[y][x] = c;
+            }
+         }
+         br.close();
+         canvas.repaint();
+         JOptionPane.showMessageDialog(this, "Map loaded successfully.", "Load", JOptionPane.INFORMATION_MESSAGE);
+      } catch(IOException e) {
+         JOptionPane.showMessageDialog(this, "Error loading map: " + e.getMessage(), "Load Failed", JOptionPane.ERROR_MESSAGE);
+      }
    }
 }

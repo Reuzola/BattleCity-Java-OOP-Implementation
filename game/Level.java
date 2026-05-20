@@ -1,4 +1,5 @@
 package game;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import model.blocks.*;
@@ -83,6 +84,29 @@ public class Level {
             break;
          default: throw new IllegalArgumentException("Difficulty must be 1, 2 or 3");
       }
+   }
+
+   public Level(String filePath) { // Custom map loader: difficulty mirrors level 2 (medium)
+      this.difficulty = 2;
+      this.enemySpeed = 2;
+
+      String[] loaded = new String[GRID_HEIGHT];
+      try {
+         BufferedReader br = new BufferedReader(new FileReader(filePath));
+         for (int y = 0; y < GRID_HEIGHT; y++) {
+            String line = br.readLine();
+            if(line == null || line.length() < GRID_WIDTH) {
+               br.close();
+               throw new IOException("Map file too short or malformed");
+            }
+            loaded[y] = line;
+         }
+         br.close();
+      } catch(IOException e) {
+         System.err.println("Error loading custom map, falling back to level 1: " + e.getMessage());
+         loaded = LEVEL_1_MAP; // Defensive fallback if file is missing or broken
+      }
+      this.mapData = loaded;
    }
 
    public int getDifficulty() {

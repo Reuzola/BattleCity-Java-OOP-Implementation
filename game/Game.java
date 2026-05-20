@@ -66,6 +66,34 @@ public class Game {
       state = GameState.RUNNING;
    }
 
+   public Game(String customMapPath, KeyHandler keyHandler) { // Custom-map constructor
+      this.keyHandler = keyHandler;
+      enemyTanks = new ArrayList<>();
+      bullets = new ArrayList<>();
+      powerUps = new ArrayList<>();
+
+      activeLevel = new Level(customMapPath);
+      enemyComposition = activeLevel.buildEnemyComposition();
+      blocks = activeLevel.buildBlocks();
+      baseBlock = activeLevel.buildBase();
+      blocks.add(baseBlock);
+
+      int px = Level.PLAYER_SPAWN_GRID_X * Block.SIZE;
+      int py = Level.PLAYER_SPAWN_GRID_Y * Block.SIZE;
+      playerTank = new PlayerTank(px, py, keyHandler);
+
+      score = 0;
+      lives = 3;
+      enemiesKilled = 0;
+      enemiesSpawned = 0;
+      spawnTimer = SPAWN_INTERVAL_FRAMES;
+      freezeTicks = 0;
+      shovelTicks = 0;
+      elapsedFrames = 0;
+      currentDifficulty = 99; // Sentinel value: custom maps do not advance to next level
+      state = GameState.RUNNING;
+   }
+
    public Level getActiveLevel() {
       return activeLevel;
    }

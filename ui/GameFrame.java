@@ -1,4 +1,5 @@
 package ui;
+import java.io.File;
 import javax.swing.*;
 import game.Game;
 import game.GameLoop;
@@ -52,7 +53,7 @@ public class GameFrame extends JFrame {
          gamePanel.requestFocusInWindow();
       });
       newGameItem.addActionListener(e -> {
-         String[] options = {"Level 1", "Level 2", "Level 3"};
+         String[] options = {"Level 1", "Level 2", "Level 3", "Custom"};
          int choice = JOptionPane.showOptionDialog(
             this,
             "Select difficulty:",
@@ -61,7 +62,15 @@ public class GameFrame extends JFrame {
             JOptionPane.QUESTION_MESSAGE,
             null, options, options[0]
          );
-         if(choice >= 0) startNewGame(choice + 1); // +1 because difficulty is 1-3, index 0-2
+         if(choice >= 0 && choice <= 2) startNewGame(choice + 1);
+         else if(choice == 3) { // Custom map selected
+            File f = new File("maps/custom.map");
+            if(!f.exists()) {
+               JOptionPane.showMessageDialog(this, "No custom map saved. Use Map Editor first.", "Custom", JOptionPane.WARNING_MESSAGE);
+            } else {
+               startNewGame("maps/custom.map");
+            }
+         }
       });
       exitItem.addActionListener(e -> System.exit(0));
       pauseItem.addActionListener(e -> {
@@ -87,6 +96,26 @@ public class GameFrame extends JFrame {
       gameLoop = new GameLoop(game, gamePanel);
       gameLoop.start();
    
+      gamePanel.requestFocusInWindow();
+      revalidate();
+      repaint();
+   }
+
+   private void startNewGame(String customMapPath) { // Same lifecycle as int-based startNewGame, but with custom map
+      if(gameLoop != null) gameLoop.stop();
+      if(gamePanel != null) remove(gamePanel);
+
+      keyHandler = new KeyHandler();
+      game = new Game(customMapPath, keyHandler);
+      keyHandler.setGame(game);
+      gamePanel = new GamePanel(game, keyHandler);
+      add(gamePanel);
+      pack();
+      setLocationRelativeTo(null);
+
+      gameLoop = new GameLoop(game, gamePanel);
+      gameLoop.start();
+
       gamePanel.requestFocusInWindow();
       revalidate();
       repaint();
