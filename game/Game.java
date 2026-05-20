@@ -1,5 +1,6 @@
 package game;
 import java.util.ArrayList;
+import data.Settings;
 import model.Bullet;
 import model.blocks.*;
 import model.powerups.*;
@@ -56,7 +57,7 @@ public class Game {
       playerTank = new PlayerTank(px, py, keyHandler);
 
       score = 0;
-      lives = 3;
+      lives = Settings.startingLives;
       enemiesKilled = 0;
       enemiesSpawned = 0;
       elapsedFrames = 0;
@@ -83,7 +84,7 @@ public class Game {
       playerTank = new PlayerTank(px, py, keyHandler);
 
       score = 0;
-      lives = 3;
+      lives = Settings.startingLives;
       enemiesKilled = 0;
       enemiesSpawned = 0;
       spawnTimer = SPAWN_INTERVAL_FRAMES;

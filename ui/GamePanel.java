@@ -1,22 +1,14 @@
 package ui;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import data.Settings;
 import game.Game;
 import game.Game.GameState;
 import model.Bullet;
 import model.Direction;
 import model.blocks.*;
-import model.powerups.BombPowerUp;
-import model.powerups.ClockPowerUp;
-import model.powerups.LifePowerUp;
-import model.powerups.PowerUp;
-import model.powerups.ShieldPowerUp;
-import model.powerups.ShovelPowerUp;
-import model.powerups.StarPowerUp;
+import model.powerups.*;
 import model.tanks.*;
 
 public class GamePanel extends JPanel {
@@ -189,6 +181,12 @@ public class GamePanel extends JPanel {
          g.setColor(new Color(255, 200, 100));
          g.drawString("SHOVEL " + (game.getShovelTicks() / 30 + 1) + "s", hudX, y);
          y += 16;
+      }
+
+      if(Settings.showFps) { // Shows fps
+         g.setColor(Color.YELLOW);
+         g.setFont(new Font("Arial", Font.PLAIN, 10));
+         g.drawString("FPS: ~30", hudX, 400);
       }
    }
 

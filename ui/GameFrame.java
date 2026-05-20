@@ -41,6 +41,7 @@ public class GameFrame extends JFrame {
       aboutItem.addActionListener(e -> new AboutDialog(this).setVisible(true));
       helpItem.addActionListener(e -> new HelpDialog(this).setVisible(true));
       highScoresItem.addActionListener(e -> new HighScorePanel(this).setVisible(true));
+      optionsItem.addActionListener(e -> new OptionsDialog(this).setVisible(true));
       mapEditorItem.addActionListener(e -> {
          Game.GameState prev = game.getState();
          if(prev == Game.GameState.RUNNING) game.setState(Game.GameState.PAUSED); // Freeze world while editing
