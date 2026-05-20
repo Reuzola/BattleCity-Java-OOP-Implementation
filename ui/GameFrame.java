@@ -5,6 +5,11 @@ import game.GameLoop;
 
 public class GameFrame extends JFrame {
 
+   private Game game;
+   private GamePanel gamePanel;
+   private GameLoop gameLoop;
+   private KeyHandler keyHandler;
+
    public GameFrame(){
       setTitle("Battle City");
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,26 +35,49 @@ public class GameFrame extends JFrame {
       menuBar.add(menu);
       setJMenuBar(menuBar);
 
+      startNewGame(1); // Starts new game with difficulty 1
+
       aboutItem.addActionListener(e -> new AboutDialog(this).setVisible(true));
       helpItem.addActionListener(e -> new HelpDialog(this).setVisible(true));
       highScoresItem.addActionListener(e -> new HighScorePanel(this).setVisible(true));
+      newGameItem.addActionListener(e -> {
+         String[] options = {"Level 1", "Level 2", "Level 3"};
+         int choice = JOptionPane.showOptionDialog(
+            this,
+            "Select difficulty:",
+            "New Game",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null, options, options[0]
+         );
+         if(choice >= 0) startNewGame(choice + 1); // +1 because difficulty is 1-3, index 0-2
+      });
       exitItem.addActionListener(e -> System.exit(0));
-
-      KeyHandler keyHandler = new KeyHandler();
-      Game game = new Game(1, keyHandler);
-      keyHandler.setGame(game);
-      GamePanel gamePanel = new GamePanel(game, keyHandler);
       pauseItem.addActionListener(e -> {
          game.togglePause();
          gamePanel.requestFocusInWindow();
       });
+
+      setVisible(true);
+   }
+
+   private void startNewGame(int difficulty) {
+      if(gameLoop != null) gameLoop.stop(); // Stop the previous loop thread if any
+      if(gamePanel != null) remove(gamePanel); // Detach old panel from the frame
+
+      keyHandler = new KeyHandler();
+      game = new Game(difficulty, keyHandler);
+      keyHandler.setGame(game);
+      gamePanel = new GamePanel(game, keyHandler);
       add(gamePanel);
       pack();
       setLocationRelativeTo(null);
-      
-      GameLoop gameLoop = new GameLoop(game, gamePanel);
-      gameLoop.start();
 
-      setVisible(true);
+      gameLoop = new GameLoop(game, gamePanel);
+      gameLoop.start();
+   
+      gamePanel.requestFocusInWindow();
+      revalidate();
+      repaint();
    }
 }
