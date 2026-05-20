@@ -95,25 +95,101 @@ public class GamePanel extends JPanel {
          g.drawString("PAUSED", 536/2 - 120, 416/2);
       }
 
-      g.setColor(new Color(60, 60, 60)); // HUD on the right side(416-536)
+      g.setColor(new Color(40, 40, 40)); // HUD background
       g.fillRect(416, 0, 120, 416);
 
-      g.setFont(new Font("Arial", Font.BOLD, 16)); // Lives title
+      g.setColor(new Color(100, 100, 100)); // Vertical separator line
+      g.fillRect(416, 0, 2, 416);
+
+      int hudX = 430; // Left margin inside HUD column
+      int y = 25; // Running y cursor
+
+      // LEVEL
+      g.setColor(Color.LIGHT_GRAY);
+      g.setFont(new Font("Arial", Font.PLAIN, 12));
+      g.drawString("LEVEL", hudX, y);
+      y += 22;
       g.setColor(Color.WHITE);
-      g.drawString("LIVES", 444, 30);
+      g.setFont(new Font("Arial", Font.BOLD, 24));
+      g.drawString(String.valueOf(game.getActiveLevel().getDifficulty()), hudX + 30, y);
+      y += 25;
 
-      g.setFont(new Font("Arial", Font.BOLD, 32)); // Lives count
-      g.drawString(String.valueOf(game.getLives()), 462, 65);
+      // LIVES
+      g.setColor(Color.LIGHT_GRAY);
+      g.setFont(new Font("Arial", Font.PLAIN, 12));
+      g.drawString("LIVES", hudX, y);
+      y += 22;
+      g.setColor(Color.WHITE);
+      g.setFont(new Font("Arial", Font.BOLD, 24));
+      g.drawString(String.valueOf(game.getLives()), hudX + 30, y);
+      y += 25;
 
-      g.setFont(new Font("Arial", Font.BOLD, 16)); // Score title
-      g.drawString("SCORE", 444, 110);
+      // SCORE
+      g.setColor(Color.LIGHT_GRAY);
+      g.setFont(new Font("Arial", Font.PLAIN, 12));
+      g.drawString("SCORE", hudX, y);
+      y += 20;
+      g.setColor(Color.WHITE);
+      g.setFont(new Font("Arial", Font.BOLD, 18));
+      g.drawString(String.valueOf(game.getScore()), hudX, y);
+      y += 25;
 
-      g.setFont(new Font("Arial", Font.BOLD, 20)); // Score value
-      g.drawString(String.valueOf(game.getScore()), 432, 140);
+      // TIME
+      int secs = game.getElapsedSeconds();
+      String timeStr = (secs / 60) + ":" + String.format("%02d", secs % 60);
+      g.setColor(Color.LIGHT_GRAY);
+      g.setFont(new Font("Arial", Font.PLAIN, 12));
+      g.drawString("TIME", hudX, y);
+      y += 20;
+      g.setColor(Color.WHITE);
+      g.setFont(new Font("Arial", Font.BOLD, 18));
+      g.drawString(timeStr, hudX, y);
+      y += 25;
 
-      g.setFont(new Font("Arial", Font.BOLD, 14)); // Enemies remaining
-      g.drawString("ENEMIES", 440, 180);
-      g.drawString("LEFT: " + (Game.MAX_TOTAL_ENEMIES - game.getEnemiesKilled()), 430, 200);
+      // ENEMIES LEFT
+      g.setColor(Color.LIGHT_GRAY);
+      g.setFont(new Font("Arial", Font.PLAIN, 12));
+      g.drawString("ENEMIES", hudX, y);
+      y += 20;
+      g.setColor(Color.WHITE);
+      g.setFont(new Font("Arial", Font.BOLD, 18));
+      g.drawString(String.valueOf(Game.MAX_TOTAL_ENEMIES - game.getEnemiesKilled()), hudX, y);
+      y += 25;
+
+      // STARS (icon row)
+      g.setColor(Color.LIGHT_GRAY);
+      g.setFont(new Font("Arial", Font.PLAIN, 12));
+      g.drawString("STARS", hudX, y);
+      y += 6;
+      int stars = game.getPlayerTank().getStarCount();
+      for (int i = 0; i < 3; i++) {
+         if(i < stars) {
+            g.drawImage(Sprites.STAR, hudX + i * 22, y, 18, 18, null);
+         } else {
+            g.setColor(new Color(80, 80, 80));
+            g.fillRect(hudX + i * 22, y, 18, 18);
+         }
+      }
+      y += 28;
+
+      // Active power-up timers (only shown when active)
+      g.setFont(new Font("Arial", Font.BOLD, 11));
+      int shieldTicks = game.getPlayerTank().getShieldTicks();
+      if(shieldTicks > 0) {
+         g.setColor(new Color(100, 200, 255));
+         g.drawString("SHIELD " + (shieldTicks / 30 + 1) + "s", hudX, y);
+         y += 16;
+      }
+      if(game.getFreezeTicks() > 0) {
+         g.setColor(new Color(150, 220, 255));
+         g.drawString("FREEZE " + (game.getFreezeTicks() / 30 + 1) + "s", hudX, y);
+         y += 16;
+      }
+      if(game.getShovelTicks() > 0) {
+         g.setColor(new Color(255, 200, 100));
+         g.drawString("SHOVEL " + (game.getShovelTicks() / 30 + 1) + "s", hudX, y);
+         y += 16;
+      }
    }
 
    private BufferedImage getPlayerSprite(Direction d) { // Helper for determine player tanks direction

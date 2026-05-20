@@ -102,6 +102,12 @@ public class Game {
    public int getElapsedSeconds() {
       return elapsedFrames / 30; // 30 frames at every second
    }
+   public int getFreezeTicks() {
+      return freezeTicks;
+   }
+   public int getShovelTicks() {
+      return shovelTicks;
+   }
    public GameState getState() {
       return state;
    }

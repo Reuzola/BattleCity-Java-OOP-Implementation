@@ -26,6 +26,9 @@ public class PlayerTank extends Tank {
    public int getStarCount() {
       return starCount;
    }
+   public int getShieldTicks() {
+      return shieldTicks;
+   }
    public boolean hasShield() {
       return shieldTicks > 0;
    }
