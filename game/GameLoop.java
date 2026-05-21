@@ -23,7 +23,9 @@ public class GameLoop implements Runnable{
       thread.start();
    }
 
-   public void stop() { running = false; }
+   public synchronized void stop() { running = false; }
+
+   private synchronized boolean isRunning() { return running; }
 
    private void handleGameOver() { // Enter user name to append user score to csv file when game over
       ui.SoundPlayer.play("gameover.wav");
@@ -41,7 +43,7 @@ public class GameLoop implements Runnable{
 
    @Override
    public void run() {
-      while(running) {
+      while(isRunning()) {
          long startTime = System.currentTimeMillis();
 
          game.update();
