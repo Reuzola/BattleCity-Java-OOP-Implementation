@@ -36,6 +36,9 @@ public abstract class Tank {
    public int getSpeed() {
       return speed;
    }
+   public void setSpeed(int speed) {
+      this.speed = speed;
+   }
    public Direction getDirection() {
       return direction;
    }

@@ -298,10 +298,15 @@ public class Game {
          int spawnX = Level.ENEMY_SPAWN_GRID_X[randomIndex] * Block.SIZE;
          int spawnY = Level.ENEMY_SPAWN_GRID_Y * Block.SIZE;
 
+         EnemyTank newEnemy = null;
          switch(type) {
-            case "B": enemyTanks.add(new BasicEnemy(spawnX, spawnY)); break;
-            case "F": enemyTanks.add(new FastEnemy(spawnX, spawnY)); break;
-            case "A": enemyTanks.add(new ArmoredEnemy(spawnX, spawnY)); break;
+            case "B": newEnemy = new BasicEnemy(spawnX, spawnY); break;
+            case "F": newEnemy = new FastEnemy(spawnX, spawnY); break;
+            case "A": newEnemy = new ArmoredEnemy(spawnX, spawnY); break;
+         }
+         if(newEnemy != null) {
+            newEnemy.setSpeed(newEnemy.getSpeed() + activeLevel.getEnemySpeed() - 1);
+            enemyTanks.add(newEnemy);
          }
 
          enemiesSpawned++;
