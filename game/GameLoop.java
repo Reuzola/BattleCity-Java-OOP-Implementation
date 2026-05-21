@@ -54,9 +54,9 @@ public class GameLoop implements Runnable{
 
          if(game.getState() == Game.GameState.LEVEL_COMPLETE) {
             levelCompleteTimer++;
-            if(levelCompleteTimer >= 90) { // Waits 3 seconds to advence to next level
+            if(levelCompleteTimer >= 90) { // Waits 3 seconds to advance to next level
                levelCompleteTimer = 0;
-               game.advenceToNextLevel();
+               game.advanceToNextLevel();
             }
          } else {
             levelCompleteTimer = 0; // Reset when not in LEVEL_COMPLETE

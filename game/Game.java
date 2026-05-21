@@ -37,6 +37,7 @@ public class Game {
    private int currentDifficulty;
    private int freezeTicks;
    private int shovelTicks;
+   private ArrayList<Block> shovelOriginalBlocks; // Original blocks before shovel is activated
    private GameState state;
    
    public Game(int difficulty, KeyHandler keyHandler){
@@ -64,6 +65,7 @@ public class Game {
       spawnTimer = SPAWN_INTERVAL_FRAMES;
       freezeTicks = 0;
       shovelTicks = 0;
+      shovelOriginalBlocks = new ArrayList<>();
       state = GameState.RUNNING;
    }
 
@@ -90,6 +92,7 @@ public class Game {
       spawnTimer = SPAWN_INTERVAL_FRAMES;
       freezeTicks = 0;
       shovelTicks = 0;
+      shovelOriginalBlocks = new ArrayList<>();
       elapsedFrames = 0;
       currentDifficulty = 99; // Sentinel value: custom maps do not advance to next level
       state = GameState.RUNNING;
@@ -203,22 +206,39 @@ public class Game {
          {-1, 1},{0, 1},{1, 1}
       };
 
-      for(int[] o : offsets) {
-         int wx = baseX + o[0] * Block.SIZE;
-         int wy = baseY + o[1] * Block.SIZE;
-         if(wx < 0 || wx >= Level.GRID_WIDTH * Block.SIZE || wy < 0 || wy >= Level.GRID_HEIGHT * Block.SIZE) continue;
-         
-         for(int i = blocks.size() - 1; i >= 0; i--) { // Remove any existing block at this cell (except base itself)
-            Block b = blocks.get(i);
-            if(b == baseBlock) continue;
-            if(b.getX() == wx && b.getY() == wy) blocks.remove(i);
+      if(activate) { // Save original blocks then make all blocks steel
+         shovelOriginalBlocks.clear();
+         for(int[] o : offsets) {
+            int wx = baseX + o[0] * Block.SIZE;
+            int wy = baseY + o[1] * Block.SIZE;
+            if(wx < 0 || wx >= Level.GRID_WIDTH * Block.SIZE || wy < 0 || wy >= Level.GRID_HEIGHT * Block.SIZE) continue;
+
+            for(int i = blocks.size() - 1; i >= 0; i--) {
+               Block b = blocks.get(i);
+               if(b == baseBlock) continue;
+               if(b.getX() == wx && b.getY() == wy) {
+                  shovelOriginalBlocks.add(b);
+                  blocks.remove(i);
+               }
+            }
+            blocks.add(new SteelBlock(wx, wy));
          }
-         if(activate) blocks.add(new SteelBlock(wx, wy));
-         else blocks.add(new BrickBlock(wx, wy));
+      } else { // Removes steels and restores original blocks
+         for(int[] o : offsets) {
+            int wx = baseX + o[0] * Block.SIZE;
+            int wy = baseY + o[1] * Block.SIZE;
+            for(int i = blocks.size() - 1; i >= 0; i--) {
+               Block b = blocks.get(i);
+               if(b == baseBlock) continue;
+               if(b.getX() == wx && b.getY() == wy) blocks.remove(i);
+            }
+         }
+         blocks.addAll(shovelOriginalBlocks);
+         shovelOriginalBlocks.clear();
       }
    }
 
-   private void spawnRandomPowerUp() { // Spans random powerup in any empty area in map
+   private void spawnRandomPowerUp() { // Spawns random powerup in any empty area in map
       for(int i = 0; i < 10; i++) {
          int rx = (int)(Math.random() * Level.GRID_WIDTH);
          int ry = (int)(Math.random() * Level.GRID_HEIGHT);
@@ -253,7 +273,7 @@ public class Game {
       }
    }
    
-   public void advenceToNextLevel() {
+   public void advanceToNextLevel() {
       if(currentDifficulty >= 3) { // Already last level
          state = GameState.GAME_OVER;
          return;
