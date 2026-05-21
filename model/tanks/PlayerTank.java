@@ -58,7 +58,7 @@ public class PlayerTank extends Tank {
          move(blocks);
       }
       if(keyHandler.firePressed && fireCooldown == 0) { // Waits for cooldown to shoot again
-         fireCooldown = (starCount >= 2) ? FIRE_COOLDOWN_FRAMES / 2 : FIRE_COOLDOWN_FRAMES;
+         fireCooldown = FIRE_COOLDOWN_FRAMES;
          ui.SoundPlayer.play("fire.wav");
          return fire();
       } else return null;
@@ -80,5 +80,12 @@ public class PlayerTank extends Tank {
 
          return new Bullet(bulletX, bulletY, BULLET_SPEED + 3, direction, this);
       } else return super.fire();
+   }
+
+   public Bullet fireSecond() { // Seconds bullet, 12px behind spawn direction
+      int centerX = x + SIZE / 2 - Bullet.SIZE / 2;
+      int centerY = y + SIZE / 2 - Bullet.SIZE / 2;
+      int bulletSpeed = (starCount >= 1) ? BULLET_SPEED + 3 : BULLET_SPEED;
+      return new Bullet(centerX, centerY, bulletSpeed, direction, this);
    }
 }

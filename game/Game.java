@@ -314,7 +314,10 @@ public class Game {
       }
 
       Bullet bullet = playerTank.act(blocks);
-      if(bullet != null) bullets.add(bullet);
+      if(bullet != null) {
+         bullets.add(bullet);
+         if(playerTank.getStarCount() >= 2) bullets.add(playerTank.fireSecond());
+      }
 
       if(!isFreezeActive()) {
          for(EnemyTank et : enemyTanks) {
